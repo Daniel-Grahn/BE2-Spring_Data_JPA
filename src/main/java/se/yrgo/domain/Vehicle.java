@@ -13,6 +13,10 @@ public class Vehicle {
     private String model;
     private String productionYear;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer owner;
+
     public Vehicle() {
     }
 
