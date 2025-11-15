@@ -73,6 +73,10 @@ public class CustomerRestController {
     }
 
     // e?
+    // @GetMapping("vehicles")
+    // public List<Vehicle> getAllVehicle(){
+
+    // }
 
     // f
     @GetMapping("carsbrand")
