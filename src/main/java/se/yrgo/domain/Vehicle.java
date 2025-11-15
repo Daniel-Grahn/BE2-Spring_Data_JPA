@@ -1,5 +1,7 @@
 package se.yrgo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +17,7 @@ public class Vehicle {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private Customer owner;
 
     public Vehicle() {
@@ -60,10 +63,20 @@ public class Vehicle {
         this.productionYear = productionYear;
     }
 
+    
+
     @Override
     public String toString() {
         return "Vehicle [id=" + id + ", registrationNumber=" + registrationNumber + ", brand=" + brand + ", model="
                 + model + ", productionYear=" + productionYear + "]";
+    }
+
+    public Customer getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Customer owner) {
+        this.owner = owner;
     }
 
 }

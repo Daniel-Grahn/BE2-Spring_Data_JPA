@@ -1,6 +1,9 @@
 package se.yrgo.domain;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +15,8 @@ public class Customer {
     private String name;
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "owner")
+    @JsonManagedReference
     private List<Vehicle> vehicalList;
 
     
@@ -40,6 +44,12 @@ public class Customer {
     public String toString() {
         return "Customer [id=" + id + ", name=" + name + ", phoneNumber=" + phoneNumber + "]";
     }
+
+
+    public List<Vehicle> getVehicalList() {
+        return vehicalList;
+    }
+
 
     
 }
