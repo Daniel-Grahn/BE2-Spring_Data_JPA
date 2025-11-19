@@ -11,6 +11,5 @@ public record CustomerDTO(
         Long id,
         String name,
         String phoneNumber,
-        List<Vehicle> vehicalList) {
-
+        List<Vehicle> vehicleList) {
 }

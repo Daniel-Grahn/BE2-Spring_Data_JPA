@@ -13,8 +13,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("SELECT DISTINCT c " +
              "FROM Customer c "+ 
-            "INNER JOIN c.vehicalList v")
-    Optional<List<Customer>> getCustomersWithVehicle();
+            "INNER JOIN c.vehicleList v")
+    List<Customer> getCustomersWithVehicle();
 
     @Query(value = "SELECT c.id From Customer as c where c.name = :name", nativeQuery = true)
     Long getCustomerIdByName(String name);

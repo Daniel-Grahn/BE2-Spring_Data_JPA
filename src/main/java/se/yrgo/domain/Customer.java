@@ -2,6 +2,7 @@ package se.yrgo.domain;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ public class Customer {
 
     @OneToMany(mappedBy = "owner")
     @JsonManagedReference
-    private List<Vehicle> vehicalList;
+    private List<Vehicle> vehicleList;
 
     
     public Customer() {
@@ -47,7 +48,7 @@ public class Customer {
 
 
     public List<Vehicle> getVehicalList() {
-        return vehicalList;
+        return vehicleList;
     }
 
 

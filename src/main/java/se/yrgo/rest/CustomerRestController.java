@@ -1,21 +1,12 @@
 package se.yrgo.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
 import se.yrgo.domain.*;
-import se.yrgo.dto.VehicleBrandDTO;
-import se.yrgo.dto.VehicleDTO;
+import se.yrgo.dto.*;
 import se.yrgo.repository.*;
 
 @RestController
@@ -28,18 +19,21 @@ public class CustomerRestController {
         this.vr = vr;
     }
 
+    // a
     @PostMapping("/customer")
     public ResponseEntity<String> createCustomer(@RequestBody Customer customer) {
         cr.save(customer);
         return ResponseEntity.ok("Sucees created Customer");
     }
 
+    // b
     @PostMapping("/vehicle")
     public ResponseEntity<String> createVehicle(@RequestBody Vehicle vehicle) {
         vr.save(vehicle);
         return ResponseEntity.ok("Sucees created Vehicle");
     }
 
+    // c
     @PostMapping("/attach")
     public ResponseEntity<String> attachVehicle(@RequestParam Long customerId, @RequestParam Long vehicleId) {
         Optional<Customer> customerOpt = cr.findById(customerId);
@@ -65,47 +59,61 @@ public class CustomerRestController {
         return ResponseEntity.ok("success");
     }
 
+    // d
     @GetMapping("/customers")
-    public List<Customer> getCustomers() {
-        Optional<List<Customer>> customers = cr.getCustomersWithVehicle();
-
-        return customers.get();
+    public List<CustomerDTO> getCustomers() { // is it fine with Customer???
+        List<Customer> customers = cr.getCustomersWithVehicle();
+        List<CustomerDTO> customersDTO = customers.stream().map((c) -> {
+            return new CustomerDTO(
+                    c.getId(),
+                    c.getName(),
+                    c.getPhoneNumber(),
+                    c.getVehicalList());
+        }).toList();
+        return customersDTO;
     }
 
-    // e?
-    // @GetMapping("vehicles")
-    // public List<Vehicle> getAllVehicle(){
+    // e
+    @GetMapping("/vehicles")
+    public List<VehicleDTO> getAllVehicle() {
+        List<Vehicle> vehicles = vr.findAll();
+        List<VehicleDTO> vehicleDTOs = vehicles.stream()
+                .map(v -> {
+                    return new VehicleDTO(v.getId(), v.getRegistrationNumber(), v.getBrand(), v.getModel(),
+                            v.getProductionYear());
+                })
+                .toList();
 
-    // }
+        return vehicleDTOs;
+    }
 
     // f
-    @GetMapping("carsbrand")
-    public List<VehicleBrandDTO> getCarsBrand(@RequestParam Long customerId) {
-        Optional<Customer> findCustomer = cr.findById(customerId);
-        List<VehicleBrandDTO> customVehicles = new ArrayList<VehicleBrandDTO>();
-        if (findCustomer.isPresent()) {
-            Customer customer = findCustomer.get();
-            for (Vehicle vehicle : customer.getVehicalList()) {
-                VehicleBrandDTO vDTO = new VehicleBrandDTO(customerId, vehicle.getRegistrationNumber(),
-                        vehicle.getBrand());
-                customVehicles.add(vDTO);
-            }
+    @GetMapping("/carsbrand")
+    public List<VehicleDTO> getCarsBrand(@RequestParam String brand) {
+        Optional<List<Vehicle>> vehiclesOpt = vr.getVechilesByBrand(brand);
+
+        if (!vehiclesOpt.isPresent()) {
+            return new ArrayList<VehicleDTO>();
         }
-        return customVehicles;
+
+        List<VehicleDTO> vehiclesDTO = vehiclesOpt.get()
+                .stream()
+                .map(vehicle -> new VehicleDTO(
+                        vehicle.getId(),
+                        vehicle.getRegistrationNumber(),
+                        vehicle.getBrand(),
+                        vehicle.getModel(),
+                        vehicle.getProductionYear()))
+                .toList();
+
+        return vehiclesDTO;
+
     }
 
-    //g
-    @GetMapping("CustomerId")
+    // g
+    @GetMapping("/CustomerId")
     public Long getCustomerId(@RequestParam String name) {
         Long id = cr.getCustomerIdByName(name);
         return id;
     }
-
-    // Remove this later
-    // @GetMapping("/customers")
-    // public List<Customer> getCustomers() {
-    // List<Customer> customers = cr.findAll();
-    // return customers;
-    // }
-
 }
