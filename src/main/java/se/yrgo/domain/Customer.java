@@ -2,7 +2,6 @@ package se.yrgo.domain;
 
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -20,7 +19,6 @@ public class Customer {
     @JsonManagedReference
     private List<Vehicle> vehicleList;
 
-    
     public Customer() {
     }
 
